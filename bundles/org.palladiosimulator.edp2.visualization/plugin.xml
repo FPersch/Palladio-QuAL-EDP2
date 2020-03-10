@@ -3,6 +3,7 @@
 <plugin>
    <extension-point id="org.palladiosimulator.edp2.visualization.datasink" name="Data Sink" schema="schema/org.palladiosimulator.edp2.visualization.datasink.exsd"/>
    <extension-point id="org.palladiosimulator.edp2.visualization.filter" name="Data Filter" schema="schema/org.palladiosimulator.edp2.visualization.filter.exsd"/>
+   <extension-point id="org.palladiosimulator.edp2.visualization.derivedmetric" name="Derived Metric" schema="schema/org.palladiosimulator.edp2.visualization.derivedmetric.exsd"/>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
       <propertyContributor

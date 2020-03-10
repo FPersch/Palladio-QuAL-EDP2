@@ -10,11 +10,14 @@ import org.eclipse.ui.PartInitException;
 import org.palladiosimulator.edp2.datastream.IDataSource;
 import org.palladiosimulator.edp2.datastream.chaindescription.ChainDescription;
 import org.palladiosimulator.edp2.datastream.edp2source.Edp2DataTupleDataSource;
+import org.palladiosimulator.edp2.models.ExperimentData.ExperimentRun;
 import org.palladiosimulator.edp2.models.ExperimentData.Measurement;
 import org.palladiosimulator.edp2.models.ExperimentData.RawMeasurements;
 import org.palladiosimulator.edp2.ui.EDP2UIPlugin;
 import org.palladiosimulator.edp2.visualization.IVisualisationInput;
 import org.palladiosimulator.edp2.visualization.wizards.DefaultViewsWizard;
+import org.palladiosimulator.edp2.visualization.wizards.DerivedMetricWizard;
+import org.palladiosimulator.edp2.visualization.wizards.SelectMeasurementsWizard;
 
 /**
  * Listener for selections in the {@link Navigator}. Creates a new {@link EDP2Source}, which is
@@ -44,6 +47,10 @@ public class NavigatorDoubleClickListener implements IDoubleClickListener {
         if (selectedObject instanceof Measurement) {
             openChainSelectionDialog(selectedObject);
         }
+        
+        if (selectedObject instanceof ExperimentRun) {
+        	openDerivedMetricDialog(selectedObject);
+        }
     }
 
     /**
@@ -66,6 +73,27 @@ public class NavigatorDoubleClickListener implements IDoubleClickListener {
         }
     }
 
+ // open the wizard to select a derived metric
+    private void openDerivedMetricDialog(final Object selectedObject) {
+    	final ExperimentRun run = (ExperimentRun) selectedObject;
+    	final DerivedMetricWizard wizard = new DerivedMetricWizard(run.getMeasurement());
+    	final WizardDialog wdialog = new WizardDialog(EDP2UIPlugin.INSTANCE.getWorkbench().getActiveWorkbenchWindow()
+                    .getShell(), wizard);
+    	wdialog.open();
+
+    	if (wdialog.getReturnCode() == Window.OK) {
+    		openSelectMetricsDialog(wizard, run);
+        }
+    }
+    
+    // open the wizard to select the measurements from which the derived metric should be derived
+    private void openSelectMetricsDialog(DerivedMetricWizard wizard, ExperimentRun run) {
+    	final SelectMeasurementsWizard metricsWizard = new SelectMeasurementsWizard(wizard.getDerivedMetric(), run.getMeasurement());
+       	final WizardDialog metricsWizarddialog = new WizardDialog(EDP2UIPlugin.INSTANCE.getWorkbench().getActiveWorkbenchWindow()
+                .getShell(), metricsWizard);
+       	metricsWizarddialog.open();
+    }
+    
     // open the wizard with reference to the selected source
     // it shows possible visualizations, which are instances of
     // DefaultSequence
